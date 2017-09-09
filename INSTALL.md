@@ -256,7 +256,7 @@ sudo pacman -S xorg xorg-xinit xterm xorg-xeyes xorg-xclock xorg-xrandr xf86-vid
 
 ## Gnome
 ```{r, engine='bash', count_lines}
-sudo pacman -S gnome-shell gdm gnome-control-center gnome-control-center
+sudo pacman -S gnome-shell gdm gnome-terminal gnome-control-center
 sudo systemctl enable gdm
 reboot
 ```
