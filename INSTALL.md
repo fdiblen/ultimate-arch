@@ -237,7 +237,24 @@ https://ramsdenj.com/2016/04/05/using-btrfs-for-easy-backup-and-rollback.html
 #===========================================
 ## https://ahxxm.com/151.moew/#base-system
 
-## extra packages
+## SSD trim
+sudo systemctl enable fstrim.timer
+
+
+## pacaur
+### /etc/pacman.conf
+[archlinuxfr]
+SigLevel = Never
+Server = http://repo.archlinux.fr/$arch
+
+
+```{r, engine='bash', count_lines}
+sudo pacman -Syy
+sudo pacman -S yaourt
+```
+
+
+## useful packages
 ```{r, engine='bash', count_lines}
 sudo pacman -S zsh htop sudo git wget curl powertop
 sudo pacman -S tmux openssl openssh pkgfile unzip unrar p7zip
@@ -261,18 +278,37 @@ sudo systemctl enable gdm
 reboot
 ```
 
-## pacaur
-### /etc/pacman.conf
-[archlinuxfr]
-SigLevel = Never
-Server = http://repo.archlinux.fr/$arch
+
+## Extra
+yaourt -S --needed chrome-gnome-shell-git chrome-shutdown-hook pamac-aur \
+    numix-circle-icon-theme-git \
+    atom-editor-bin \
+    tlp gtop \
+    wps-office \
+    vertex-themes flatplat-theme-git numix-themes gtk-theme-arc moka-icon-theme-git paper-gtk-theme-git \
+    opendesktop-fonts ttf-ms-fonts ttf-ubuntu-font-family ttf-google-fonts-git \
+    vlc \
+    inkscape \
+    dropbox nautilus-dropbox \
+    google-chrome flashplugin chromium-pepper-flash \
+    p7zip p7zip-plugins unrar tar rsync file-roller seahorse-nautilus nautilus-share zlib unzip zip zziplib \
+    zim \
+    spotify \
+    pyenv
 
 
-```{r, engine='bash', count_lines}
-sudo pacman -Syy
-sudo pacman -S yaourt
-```
+## Preload
+sudo pacman -S preload
+sudo systemctl enable preload.service
 
+
+## Printing
+yaourt -S --needed cups gutenprint libpaper foomatic-db-engine ghostscript gsfonts foomatic-db foomatic-filters cups-pdf system-config-printer
+
+sudo systemctl enable org.cups.cupsd.service
+sudo systemctl enable cups-browsed.service
+sudo systemctl start org.cups.cupsd.service
+sudo systemctl start cups-browsed.service
 
 
 
