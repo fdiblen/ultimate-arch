@@ -256,23 +256,22 @@ sudo pacman -S xorg xorg-xinit xterm xorg-xeyes xorg-xclock xorg-xrandr xf86-vid
 
 ## Gnome
 ```{r, engine='bash', count_lines}
-sudo pacman -S gnome-shell gdm gnome-terminal gnome-control-center
+sudo pacman -S gnome-shell gdm gnome-terminal gnome-control-center gnome-tweak-tool
 sudo systemctl enable gdm
 reboot
 ```
 
 ## pacaur
-sudo pacman -S expac yajl --noconfirm
-mkdir ~/temp && cd ~/temp
-#gpg --recv-keys --keyserver hkp://pgp.mit.edu 1EB2638FF56C0C53
-curl -o PKGBUILD https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=cower
-makepkg -i PKGBUILD --noconfirm
-curl -o PKGBUILD https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=pacaur
-makepkg -i PKGBUILD --noconfirm
-cd ~ && rm -r ~/temp
+### /etc/pacman.conf
+[archlinuxfr]
+SigLevel = Never
+Server = http://repo.archlinux.fr/$arch
 
 
-
+```{r, engine='bash', count_lines}
+sudo pacman -Syy
+sudo pacman -S yaourt
+```
 
 
 
