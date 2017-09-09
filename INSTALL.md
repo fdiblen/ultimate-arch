@@ -4,6 +4,7 @@
 ## 1. Set variables
 ```{r, engine='bash', count_lines}
 export INSDRIVE=/dev/nvme0n1
+export SWAPPARTITION=/dev/nvme0n1p2
 export INSPARTITION=/dev/nvme0n1p3
 export BTRFSNAME=btrfsroot
 export CRYPTNAME=cryptroot
@@ -34,7 +35,7 @@ sudo sgdisk $INSPARTITION --attributes=2:set
 #sgdisk -og $INSDRIVE
 fdisk -l $INSDRIVE
 ```
-#https://suntong.github.io/blogs/2015/12/26/creating-gpt-partitions-easily-on-the-command-line/
+
 
 Encrypt the disk
 
@@ -91,10 +92,14 @@ sudo arch-chroot  $MOUNTDIR
 #### Extra fonts
 ```{r, engine='bash', count_lines}
 export INSDRIVE=/dev/nvme0n1
-export INSPARTITION=/dev/nvme0n1p2
+export SWAPPARTITION=/dev/nvme0n1p2
+export INSPARTITION=/dev/nvme0n1p3
 export BTRFSNAME=btrfsroot
 export CRYPTNAME=cryptroot
-sudo pacman -S powerline-fonts awesome-terminal-fonts freetype2
+
+sudo pacman -S powerline-fonts awesome-terminal-fonts freetype2 terminus-font
+
+echo FONT=Lat2-Terminus16 >> /etc/vconsole.conf
 ```
 
 
@@ -107,7 +112,7 @@ hwclock --systohc --utc
 
 #### Set the hostname
 ```{r, engine='bash', count_lines}
-echo hostname="Joker" > /etc/hostname
+echo "Joker" > /etc/hostname
 ```
 
 
@@ -180,10 +185,18 @@ echo 'GRUB_ENABLE_CRYPTODISK=y' >> /etc/default/grub
 echo 'GRUB_CMDLINE_LINUX="cryptdevice='$INSPARTITION':'$CRYPTNAME'"' >> /etc/default/grub 
 ```
 
+for SSD disk you need to add "allow-discards" enables TRIM support:
+
+```{r, engine='bash', count_lines}
+echo 'GRUB_CMDLINE_LINUX="cryptdevice='$INSPARTITION':'$CRYPTNAME':allow-discards"' >> /etc/default/grub 
+```
+
+
 ```{r, engine='bash', count_lines}
 sudo grub-install --target=i386-pc $INSDRIVE
 sudo grub-mkconfig -o /boot/grub/grub.cfg
 ```
+
 
 ## Reboot the system
 ```{r, engine='bash', count_lines}
@@ -191,36 +204,64 @@ reboot
 ```
 
 
-#http://www.bitflop.dk/tutorials/real-full-disk-encryption-using-grub-on-arch-linux-for-bios.html
+# POST installation
+
+## add user
+```{r, engine='bash', count_lines}
+sudo useradd -m -g users -G wheel,storage,power -s /bin/zsh fdiblen
+sudo passwd fdiblen
+```
+
+## /etc/crypttab
+#SWAP --> /dev/nvme0n1p2
+swap /dev/nvme0n1p2 /dev/urandom swap,cipher=aes-cbc-essiv:sha256,size=256
+
+```{r, engine='bash', count_lines}
+ls -l /dev/mapper/
+```
+
+## /etc/fstab
+/dev/mapper/swap swap swap defaults 0 0
+
+```{r, engine='bash', count_lines}
+reboot
+```
+
 #https://wiki.archlinux.org/index.php/User:Altercation/Bullet_Proof_Arch_Install
 
 https://ramsdenj.com/2016/04/05/using-btrfs-for-easy-backup-and-rollback.html
 
 
+
 # post installation
 #===========================================
-# https://ahxxm.com/151.moew/#base-system
+## https://ahxxm.com/151.moew/#base-system
 
-# extra packages
+## extra packages
+```{r, engine='bash', count_lines}
 sudo pacman -S zsh htop sudo git wget curl powertop
 sudo pacman -S tmux openssl openssh pkgfile unzip unrar p7zip
+```
 
-# add user
-sudo useradd -m -g users -G wheel,storage,power -s /bin/zsh fdiblen
-sudo passwd fdiblen
 
-# setup sudo and allow wheel group
+## setup sudo and allow wheel group
 export EDITOR=vim
 visudo
 
-# switch to normal user and continue as this user
+## switch to normal user and continue as this user
 su fdiblen && cd
 
-# X-server (do not choose nvidia)
+## X-server
 sudo pacman -S xorg xorg-xinit xterm xorg-xeyes xorg-xclock xorg-xrandr xf86-video-intel
 
+## Gnome
+```{r, engine='bash', count_lines}
+sudo pacman -S gnome-shell gdm
+sudo systemctl enable gdm
+reboot
+```
 
-# pacaur
+## pacaur
 sudo pacman -S expac yajl --noconfirm
 mkdir ~/temp && cd ~/temp
 #gpg --recv-keys --keyserver hkp://pgp.mit.edu 1EB2638FF56C0C53
@@ -240,38 +281,36 @@ cd ~ && rm -r ~/temp
 
 
 # Chroot
-# Antergos live cd is good for chrooting
-# https://antergos.com
+#Antergos live cd is good for chrooting
+#https://antergos.com
 #===========================================
 export INSDRIVE=/dev/nvme0n1
-export INSPARTITION=/dev/nvme0n1p2
+export INSPARTITION=/dev/nvme0n1p3
 export BTRFSNAME=btrfsroot
 export CRYPTNAME=cryptroot
 
-# create the mount folders
+## create the mount folders
 export MOUNTDIR=/mnt/ARCH
 mkdir $MOUNTDIR
 mkdir $MOUNTDIR/home
 mkdir $MOUNTDIR/boot
 
-# decrypt the volume
+## decrypt the volume
 sudo cryptsetup luksOpen $INSPARTITION $CRYPTNAME
 
-# mount the volumes
+## mount the volumes
 sudo mount -t btrfs -o defaults,discard,ssd,space_cache,noatime,compress=lzo,autodefrag,subvol=/ /dev/mapper/$CRYPTNAME $MOUNTDIR
 sudo mount -o noatime,compress=lzo,discard,ssd,defaults,subvol=/boot /dev/mapper/$CRYPTNAME $MOUNTDIR/boot
 sudo mount -o noatime,compress=lzo,discard,ssd,defaults,subvol=/home /dev/mapper/$CRYPTNAME $MOUNTDIR/home
 sudo sync
 
-# show system information
+## show system information
 btrfs filesystem show
 
-# filesystem repair (skip if not necessary)
+## filesystem repair (skip if not necessary)
 sudo btrfs check --repair /dev/mapper/$CRYPTNAME
 
-# chroot
+## chroot
 sudo arch-chroot $MOUNTDIR
-
-
 
 
