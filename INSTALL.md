@@ -198,6 +198,9 @@ echo 'GRUB_CMDLINE_LINUX="cryptdevice='$INSPARTITION':'$CRYPTNAME':allow-discard
 sudo grub-install --target=i386-pc $INSDRIVE
 sudo grub-mkconfig -o /boot/grub/grub.cfg
 ```
+#### Hibernation
+#export SWAPPARTITION=/dev/nvme0n1p2
+GRUB_CMDLINE_LINUX_DEFAULT="resume=/dev/nvme0n1p2"
 
 
 ## Reboot the system
@@ -315,16 +318,17 @@ eslt52% yaourt -S --needed chrome-gnome-shell-git chrome-shutdown-hook pamac-aur
 
 ## Grub make-up
 ```{r, engine='bash', count_lines}
-yaourt -S arch-silence-grub-theme
+yaourt -S grub2-theme-arch-leap
 ```
-
-
 ### /etc/default/grub
-GRUB_THEME="/boot/grub/themes/arch-silence/theme.txt"
+
+GRUB_BACKGROUND="/boot/grub/themes/arch-leap/background.png"
+GRUB_THEME="/boot/grub/themes/arch-leap/theme.txt"
 
 ```{r, engine='bash', count_lines}
 sudo grub-mkconfig -o /boot/grub/grub.cf
 ```
+
 
 ## Preload
 sudo pacman -S preload
