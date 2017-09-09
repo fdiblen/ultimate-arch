@@ -280,6 +280,8 @@ reboot
 
 
 ## Extra
+
+```{r, engine='bash', count_lines}
 yaourt -S --needed chrome-gnome-shell-git chrome-shutdown-hook pamac-aur \
     numix-circle-icon-theme-git \
     atom-editor-bin \
@@ -295,6 +297,8 @@ yaourt -S --needed chrome-gnome-shell-git chrome-shutdown-hook pamac-aur \
     zim \
     spotify \
     pyenv
+
+```
 
 
 ## Preload
