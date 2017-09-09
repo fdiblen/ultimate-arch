@@ -282,22 +282,21 @@ reboot
 ## Extra
 
 ```{r, engine='bash', count_lines}
-yaourt -S --needed chrome-gnome-shell-git chrome-shutdown-hook pamac-aur \
+eslt52% yaourt -S --needed chrome-gnome-shell-git chrome-shutdown-hook pamac-aur \
     numix-circle-icon-theme-git \
     atom-editor-bin \
     tlp gtop \
     wps-office \
-    vertex-themes flatplat-theme-git numix-themes gtk-theme-arc moka-icon-theme-git paper-gtk-theme-git \
+    vertex-themes flatplat-theme-git moka-icon-theme-git paper-gtk-theme-git \ 
     opendesktop-fonts ttf-ms-fonts ttf-ubuntu-font-family ttf-google-fonts-git \
     vlc \
     inkscape \
     dropbox nautilus-dropbox \
-    google-chrome flashplugin chromium-pepper-flash \
-    p7zip p7zip-plugins unrar tar rsync file-roller seahorse-nautilus nautilus-share zlib unzip zip zziplib \
+    firefox google-chrome flashplugin \              
+    p7zip unrar tar rsync file-roller seahorse-nautilus nautilus-share zlib unzip zip zziplib \ 
     zim \
     spotify \
     pyenv
-
 ```
 
 
