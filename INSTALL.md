@@ -72,7 +72,9 @@ sudo sync
 ## 3. Install the base system
 ```{r, engine='bash', count_lines}
 sudo pacstrap $MOUNTDIR base base-devel btrfs-progs openssh net-tools wpa_supplicant networkmanager xf86-video-intel vim
+sudo pacman -S broadcom-wl-dkms bluez-firmware linux-headers
 ```
+
 Optional kernels:
 ```{r, engine='bash', count_lines}
 sudo pacstrap $MOUNTDIR linux-zen linux-lts
@@ -259,7 +261,9 @@ sudo pacman -S yaourt
 sudo pacman -S zsh htop sudo git wget curl powertop
 sudo pacman -S tmux openssl openssh pkgfile unzip unrar p7zip
 ```
-
+Optional:
+linux-zen-headers
+linux-lts-headers
 
 ## setup sudo and allow wheel group
 export EDITOR=vim
