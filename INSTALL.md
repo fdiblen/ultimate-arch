@@ -240,7 +240,9 @@ https://ramsdenj.com/2016/04/05/using-btrfs-for-easy-backup-and-rollback.html
 ## https://ahxxm.com/151.moew/#base-system
 
 ## SSD trim
+```{r, engine='bash', count_lines}
 sudo systemctl enable fstrim.timer
+```
 
 
 ## pacaur
@@ -262,8 +264,10 @@ sudo pacman -S zsh htop sudo git wget curl powertop
 sudo pacman -S tmux openssl openssh pkgfile unzip unrar p7zip
 ```
 Optional:
-linux-zen-headers
-linux-lts-headers
+```{r, engine='bash', count_lines}
+sudo pacman -S linux-zen-headers linux-lts-headers
+```{r, engine='bash', count_lines}
+
 
 ## setup sudo and allow wheel group
 export EDITOR=vim
@@ -272,8 +276,12 @@ visudo
 ## switch to normal user and continue as this user
 su fdiblen && cd
 
+
 ## X-server
+```{r, engine='bash', count_lines}
 sudo pacman -S xorg xorg-xinit xterm xorg-xeyes xorg-xclock xorg-xrandr xf86-video-intel
+```
+
 
 ## Gnome
 ```{r, engine='bash', count_lines}
@@ -292,7 +300,7 @@ eslt52% yaourt -S --needed chrome-gnome-shell-git chrome-shutdown-hook pamac-aur
     tlp gtop \
     wps-office \
     vertex-themes flatplat-theme-git moka-icon-theme-git paper-gtk-theme-git \ 
-    opendesktop-fonts ttf-ms-fonts ttf-ubuntu-font-family ttf-google-fonts-git \
+    opendesktop-fonts ttf-ms-fonts ttf-google-fonts-git nerd-fonts-git \
     vlc \
     inkscape \
     dropbox nautilus-dropbox \
@@ -300,9 +308,23 @@ eslt52% yaourt -S --needed chrome-gnome-shell-git chrome-shutdown-hook pamac-aur
     p7zip unrar tar rsync file-roller seahorse-nautilus nautilus-share zlib unzip zip zziplib \ 
     zim \
     spotify \
+    texstudio biber texlive-most \
+    archlinux-artwork \
     pyenv
 ```
 
+## Grub make-up
+```{r, engine='bash', count_lines}
+yaourt -S arch-silence-grub-theme
+```
+
+
+### /etc/default/grub
+GRUB_THEME="/boot/grub/themes/arch-silence/theme.txt"
+
+```{r, engine='bash', count_lines}
+sudo grub-mkconfig -o /boot/grub/grub.cf
+```
 
 ## Preload
 sudo pacman -S preload
@@ -310,7 +332,7 @@ sudo systemctl enable preload.service
 
 
 ## Printing
-yaourt -S --needed cups gutenprint libpaper foomatic-db-engine ghostscript gsfonts foomatic-db foomatic-filters cups-pdf system-config-printer
+yaourt -S --needed cups gutenprint libpaper foomatic-db-engine ghostscript gsfonts foomatic-db cups-pdf system-config-printer
 
 sudo systemctl enable org.cups.cupsd.service
 sudo systemctl enable cups-browsed.service
