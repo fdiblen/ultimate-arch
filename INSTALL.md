@@ -4,7 +4,7 @@
 ## 1. Set variables
 ```{r, engine='bash', count_lines}
 export INSDRIVE=/dev/nvme0n1
-export INSPARTITION=/dev/nvme0n1p2
+export INSPARTITION=/dev/nvme0n1p3
 export BTRFSNAME=btrfsroot
 export CRYPTNAME=cryptroot
 
@@ -18,17 +18,23 @@ Remove legacy partition information
 
 ```{r, engine='bash', count_lines}
 sudo sgdisk --zap-all $INSDRIVE
+sudo sgdisk -og $INSDRIVE
 ```
 
 Create the 2 partitions. One for swap and the other for / (the root filesystem). 
     
 ```{r, engine='bash', count_lines}
 sudo sgdisk --clear \
-         --new=1:0:+8GiB   --typecode=1:8200 --change-name=1:cryptswap \
-         --new=2:0:0       --typecode=2:8300 --change-name=2:cryptsystem \
+         --new=1:0:+5MiB   --typecode=1:ef02 --change-name=1:bios_boot \
+         --new=2:0:+8GiB   --typecode=2:8200 --change-name=2:cryptswap \
+         --new=3:0:0       --typecode=3:8300 --change-name=3:cryptsystem \
            $INSDRIVE
+           
+sudo sgdisk $INSPARTITION --attributes=2:set
+#sgdisk -og $INSDRIVE
+fdisk -l $INSDRIVE
 ```
-
+#https://suntong.github.io/blogs/2015/12/26/creating-gpt-partitions-easily-on-the-command-line/
 
 Encrypt the disk
 
