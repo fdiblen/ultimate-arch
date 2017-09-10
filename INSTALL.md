@@ -89,9 +89,6 @@ sudo genfstab -p $MOUNTDIR | sudo tee -a $MOUNTDIR/etc/fstab > /dev/null
 ```{r, engine='bash', count_lines}
 sudo arch-chroot  $MOUNTDIR
 ```
-
-
-#### Extra fonts
 ```{r, engine='bash', count_lines}
 export INSDRIVE=/dev/nvme0n1
 export SWAPPARTITION=/dev/nvme0n1p2
@@ -99,9 +96,6 @@ export INSPARTITION=/dev/nvme0n1p3
 export BTRFSNAME=btrfsroot
 export CRYPTNAME=cryptroot
 
-sudo pacman -S powerline-fonts awesome-terminal-fonts freetype2 terminus-font
-
-echo FONT=Lat2-Terminus16 >> /etc/vconsole.conf
 ```
 
 
@@ -233,13 +227,19 @@ reboot
 ```
 
 
-# post installation
+# Extras
 
 ## SSD trim
 ```{r, engine='bash', count_lines}
 sudo systemctl enable fstrim.timer
 ```
 
+## Fonts
+```{r, engine='bash', count_lines}
+sudo pacman -S powerline-fonts awesome-terminal-fonts freetype2 terminus-font
+
+echo FONT=Lat2-Terminus16 >> /etc/vconsole.conf
+```
 
 ## pacaur
 ### /etc/pacman.conf
@@ -306,8 +306,17 @@ yaourt -S --needed chrome-gnome-shell-git chrome-shutdown-hook pamac-aur \
     spotify \
     texstudio biber texlive-most \
     archlinux-artwork \
+    xclip \
+    redshift \
     pyenv
 ```
+## Shadowsocks
+TODO
+
+
+## Powertop
+TODO
+
 
 ## Grub make-up
 ```{r, engine='bash', count_lines}
