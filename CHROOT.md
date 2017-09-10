@@ -4,7 +4,7 @@ Antergos live cd is a good options for chrooting.
 [https://antergos.com](https://antergos.com)
 
 
-## set variables
+## 1. set variables
 ```{r, engine='bash', count_lines}
 export INSDRIVE=/dev/nvme0n1
 export INSPARTITION=/dev/nvme0n1p3
@@ -13,7 +13,7 @@ export CRYPTNAME=cryptroot
 ```
 
 
-## create the mount folders
+## 2. create the mount folders
 ```{r, engine='bash', count_lines}
 export MOUNTDIR=/mnt/ARCH
 mkdir $MOUNTDIR
@@ -22,13 +22,13 @@ mkdir $MOUNTDIR/boot
 ```
 
 
-## decrypt the volume
+## 3. decrypt the volume
 ```{r, engine='bash', count_lines}
 sudo cryptsetup luksOpen $INSPARTITION $CRYPTNAME
 ```
 
 
-## mount the volumes
+## 4. mount the (sub)volumes
 ```{r, engine='bash', count_lines}
 sudo mount -t btrfs -o defaults,discard,ssd,space_cache,noatime,compress=lzo,autodefrag,subvol=/ /dev/mapper/$CRYPTNAME $MOUNTDIR
 sudo mount -o noatime,compress=lzo,discard,ssd,defaults,subvol=/boot /dev/mapper/$CRYPTNAME $MOUNTDIR/boot
@@ -37,19 +37,19 @@ sudo sync
 ```
 
 
-## show system information
+## 5. show system information
 ```{r, engine='bash', count_lines}
 btrfs filesystem show
 ```
 
 
-## filesystem repair (skip if not necessary)
+## 6. filesystem repair (skip if not necessary)
 ```{r, engine='bash', count_lines}
 sudo btrfs check --repair /dev/mapper/$CRYPTNAME
 ```
 
 
-## chroot
+## 7. chroot
 ```{r, engine='bash', count_lines}
 sudo arch-chroot $MOUNTDIR
 ```
