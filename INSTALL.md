@@ -286,6 +286,14 @@ sudo systemctl enable gdm
 reboot
 ```
 
+## Printing
+yaourt -S --needed cups gutenprint libpaper foomatic-db-engine ghostscript gsfonts foomatic-db cups-pdf system-config-printer
+
+sudo systemctl enable org.cups.cupsd.service
+sudo systemctl enable cups-browsed.service
+sudo systemctl start org.cups.cupsd.service
+sudo systemctl start cups-browsed.service
+
 
 ## Extra
 
@@ -331,18 +339,13 @@ GRUB_THEME="/boot/grub/themes/arch-leap/theme.txt"
 sudo grub-mkconfig -o /boot/grub/grub.cf
 ```
 
-
 ## Preload
 sudo pacman -S preload
 sudo systemctl enable preload.service
 
 
-## Printing
-yaourt -S --needed cups gutenprint libpaper foomatic-db-engine ghostscript gsfonts foomatic-db cups-pdf system-config-printer
+## Docker
+docker docker-compose
 
-sudo systemctl enable org.cups.cupsd.service
-sudo systemctl enable cups-browsed.service
-sudo systemctl start org.cups.cupsd.service
-sudo systemctl start cups-browsed.service
-
-
+#kitematic
+#kubernetes
