@@ -16,3 +16,6 @@ TODO
 
 ## Config files
 TODO
+
+## Chroot for troubleshooting
+Check [CHROOT.md](CHROOT.md)
