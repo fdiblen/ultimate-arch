@@ -2,14 +2,14 @@
 
 Arch Linux installation with full encryption.
   * encrypted Grub bootloader
-  * encrypted disk
+  * full disk encryption
   * btrfs filesystem (root)
 
 ## BIOS seettings
 TODO
 
 ## Installation 
-Check [INSTALL.md](INSATLL.md)
+Check [INSTALL.md](INSTALL.md)
 
 ## System snapshots
 TODO
