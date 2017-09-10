@@ -232,15 +232,8 @@ ls -l /dev/mapper/
 reboot
 ```
 
-#https://wiki.archlinux.org/index.php/User:Altercation/Bullet_Proof_Arch_Install
-
-https://ramsdenj.com/2016/04/05/using-btrfs-for-easy-backup-and-rollback.html
-
-
 
 # post installation
-#===========================================
-## https://ahxxm.com/151.moew/#base-system
 
 ## SSD trim
 ```{r, engine='bash', count_lines}
@@ -297,7 +290,7 @@ reboot
 ## Extra
 
 ```{r, engine='bash', count_lines}
-eslt52% yaourt -S --needed chrome-gnome-shell-git chrome-shutdown-hook pamac-aur \
+yaourt -S --needed chrome-gnome-shell-git chrome-shutdown-hook pamac-aur \
     numix-circle-icon-theme-git \
     atom-editor-bin \
     tlp gtop \
