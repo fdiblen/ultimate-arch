@@ -349,3 +349,13 @@ docker docker-compose
 
 #kitematic
 #kubernetes
+
+
+
+## i3-gaps
+i3-gaps
+polybar-git
+compton
+dunst
+rofi
+termite
