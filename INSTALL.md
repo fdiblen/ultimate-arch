@@ -1,6 +1,8 @@
 
 # Install Arch Linux - Fully encrypted disk with Btrfs filesystem
 
+**Warning: This setup will completely wipe your system and will only install Arch linux.**
+
 ## 1. Set variables
 ```{r, engine='bash', count_lines}
 export INSDRIVE=/dev/nvme0n1
