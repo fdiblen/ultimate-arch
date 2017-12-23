@@ -73,7 +73,7 @@ sudo sync
 
 ## 3. Install the base system
 ```{r, engine='bash', count_lines}
-sudo pacstrap $MOUNTDIR base base-devel btrfs-progs openssh net-tools wpa_supplicant networkmanager xf86-video-intel vim
+sudo pacstrap $MOUNTDIR base base-devel btrfs-progs openssh net-tools wpa_supplicant networkmanager xf86-video-intel vim zsh
 sudo pacman -S broadcom-wl-dkms bluez-firmware linux-headers
 ```
 
@@ -97,9 +97,12 @@ export SWAPPARTITION=/dev/nvme0n1p2
 export INSPARTITION=/dev/nvme0n1p3
 export BTRFSNAME=btrfsroot
 export CRYPTNAME=cryptroot
-
 ```
 
+#### Update package database
+```{r, engine='bash', count_lines}
+pacman -Syy
+```
 
 #### timezone
 ```{r, engine='bash', count_lines}
@@ -126,6 +129,8 @@ locale-gen
 ```{r, engine='bash', count_lines}
 echo keymap=en >> /etc/keymaps
 echo consolefont=Lat2-Terminus16 >> /etc/consolefont
+echo FONT=ter-p24n > /etc/vconsole.conf
+echo FONT_MAP=8859-1 >> /etc/vconsole.conf
 ```
 
 ### Create the keyfile
@@ -135,48 +140,35 @@ cryptsetup luksAddKey $INSPARTITION /crypto_keyfile.bin
 chmod 000 /crypto_keyfile.bin
 ```
 
-
 ### Edit kernel modules (HOOKS) in /etc/mkinitcpio.conf 
-MODULES="intel_agp i915 nvme"
+MODULES=(intel_agp i915 nvme)
 BINARIES=""
 #FILES="/etc/modprobe.d/modprobe.conf"
 FILES="/crypto_keyfile.bin"
-HOOKS="base udev autodetect modconf block consolefont keymap encrypt lvm2 resume filesystems keyboard fsck btrfs"
+HOOKS=(base udev autodetect modconf block consolefont keymap encrypt lvm2 resume filesystems keyboard fsck btrfs)
 
 ```{r, engine='bash', count_lines}
-sudo touch /etc/modprobe.d/modprobe.conf
-sudo mkinitcpio -p linux
+touch /etc/modprobe.d/modprobe.conf
+mkinitcpio -p linux
 ```
-
 
 ### set password
 ```{r, engine='bash', count_lines}
-sudo passwd root
+passwd root
 ```
 
 
 # Enable services
 ```{r, engine='bash', count_lines}
-sudo systemctl enable NetworkManager
-sudo systemctl enable sshd
+systemctl enable NetworkManager # you can use connman instead of this
+systemctl enable sshd
 ```
 
 
 # grub
 ```{r, engine='bash', count_lines}
-sudo pacman -Sy grub os-prober mtools dosfstools fuse2 
+pacman -Sy grub os-prober mtools dosfstools fuse2 
 ```
-
-
-#note uuid of parition
-#blkid -o value -s UUID $INSPARTITION
-#TODO: also check options here --> https://wiki.archlinux.org/index.php/Dm-crypt/System_configuration
-
-
-## /etc/default/grub
-### Be careful with the lines below!
-#GRUB_ENABLE_CRYPTODISK=y
-#GRUB_CMDLINE_LINUX="cryptdevice=/dev/nvme0n1p2:cryptroot"
 
 ```{r, engine='bash', count_lines}
 echo 'GRUB_ENABLE_CRYPTODISK=y' >> /etc/default/grub 
@@ -189,14 +181,18 @@ for SSD disk you need to add "allow-discards" enables TRIM support:
 echo 'GRUB_CMDLINE_LINUX="cryptdevice='$INSPARTITION':'$CRYPTNAME':allow-discards"' >> /etc/default/grub 
 ```
 
+#### Hibernation
+#### use SWAPPARTITION=/dev/nvme0n1p2 for hibernation
+#GRUB_CMDLINE_LINUX_DEFAULT="resume=/dev/nvme0n1p2"
+
 
 ```{r, engine='bash', count_lines}
-sudo grub-install --target=i386-pc $INSDRIVE
-sudo grub-mkconfig -o /boot/grub/grub.cfg
+grub-install --target=i386-pc $INSDRIVE
+grub-mkconfig -o /boot/grub/grub.cfg
 ```
-#### Hibernation
-#export SWAPPARTITION=/dev/nvme0n1p2
-GRUB_CMDLINE_LINUX_DEFAULT="resume=/dev/nvme0n1p2"
+##### ignore the warning -->   WARNING: Failed to connect to lvmetad. Falling back to device scanning.
+
+
 
 
 ## Reboot the system
@@ -209,8 +205,8 @@ reboot
 
 ## add user
 ```{r, engine='bash', count_lines}
-sudo useradd -m -g users -G wheel,storage,power -s /bin/zsh fdiblen
-sudo passwd fdiblen
+useradd -m -g users -G wheel,storage,power -s /bin/zsh fdiblen
+passwd fdiblen
 ```
 
 ## /etc/crypttab
@@ -280,6 +276,21 @@ su fdiblen && cd
 sudo pacman -S xorg xorg-xinit xterm xorg-xeyes xorg-xclock xorg-xrandr xf86-video-intel
 ```
 
+## i3(-gaps) 
+```{r, engine='bash', count_lines}
+yaourt --needed --noconfirm -S i3-gaps polybar-git compton-git dunst rofi-git termite-git
+```
+
+# Lightdm - desktop(login) manager
+```{r, engine='bash', count_lines}
+yaourt --needed --noconfirm -S lightdm-gtk-greeter
+systemctl enable lightdm
+```
+#### edit /etc/lightdm/lightdm.conf
+[Seat:*]
+greeter-session=lightdm-gtk-greeter
+
+
 
 ## Gnome
 ```{r, engine='bash', count_lines}
@@ -288,6 +299,7 @@ sudo systemctl enable gdm
 reboot
 ```
 
+
 ## Printing
 yaourt -S --needed cups gutenprint libpaper foomatic-db-engine ghostscript gsfonts foomatic-db cups-pdf system-config-printer
 
@@ -295,6 +307,7 @@ sudo systemctl enable org.cups.cupsd.service
 sudo systemctl enable cups-browsed.service
 sudo systemctl start org.cups.cupsd.service
 sudo systemctl start cups-browsed.service
+
 
 
 ## Extra
@@ -320,6 +333,8 @@ yaourt -S --needed chrome-gnome-shell-git chrome-shutdown-hook pamac-aur \
     redshift \
     pyenv
 ```
+
+
 ## Shadowsocks
 TODO
 
@@ -353,11 +368,5 @@ docker docker-compose
 #kubernetes
 
 
-
-## i3-gaps
-i3-gaps
-polybar-git
-compton
-dunst
-rofi
-termite
+# Links
+https://wiki.archlinux.org/index.php/general_recommendations
