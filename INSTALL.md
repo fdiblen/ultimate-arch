@@ -225,6 +225,18 @@ reboot
 ```
 
 
+# AUR Helper (yay)
+
+```{r, engine='bash', count_lines}
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si
+```
+
+# Wifi driver
+yay -S bcm4350-firmware
+
+
 # Extras
 
 ## SSD trim
@@ -237,18 +249,6 @@ sudo systemctl enable fstrim.timer
 sudo pacman -S powerline-fonts awesome-terminal-fonts freetype2 terminus-font
 
 echo FONT=Lat2-Terminus16 >> /etc/vconsole.conf
-```
-
-## pacaur
-### /etc/pacman.conf
-[archlinuxfr]
-SigLevel = Never
-Server = http://repo.archlinux.fr/$arch
-
-
-```{r, engine='bash', count_lines}
-sudo pacman -Syy
-sudo pacman -S yaourt
 ```
 
 
@@ -278,12 +278,12 @@ sudo pacman -S xorg xorg-xinit xterm xorg-xeyes xorg-xclock xorg-xrandr xf86-vid
 
 ## i3(-gaps) 
 ```{r, engine='bash', count_lines}
-yaourt --needed --noconfirm -S i3-gaps polybar-git compton-git dunst rofi-git termite-git
+yay --needed --noconfirm -S i3-gaps polybar-git compton-git dunst rofi-git termite-git
 ```
 
 # Lightdm - desktop(login) manager
 ```{r, engine='bash', count_lines}
-yaourt --needed --noconfirm -S lightdm-gtk-greeter
+yay --needed --noconfirm -S lightdm-gtk-greeter
 systemctl enable lightdm
 ```
 #### edit /etc/lightdm/lightdm.conf
@@ -301,7 +301,7 @@ reboot
 
 
 ## Printing
-yaourt -S --needed cups gutenprint libpaper foomatic-db-engine ghostscript gsfonts foomatic-db cups-pdf system-config-printer
+yay -S --needed cups gutenprint libpaper foomatic-db-engine ghostscript gsfonts foomatic-db cups-pdf system-config-printer
 
 sudo systemctl enable org.cups.cupsd.service
 sudo systemctl enable cups-browsed.service
@@ -313,7 +313,7 @@ sudo systemctl start cups-browsed.service
 ## Extra
 
 ```{r, engine='bash', count_lines}
-yaourt -S --needed chrome-gnome-shell-git chrome-shutdown-hook pamac-aur \
+yay -S --needed chrome-gnome-shell-git chrome-shutdown-hook pamac-aur \
     numix-circle-icon-theme-git \
     atom-editor-bin \
     tlp gtop \
@@ -345,7 +345,7 @@ TODO
 
 ## Grub make-up
 ```{r, engine='bash', count_lines}
-yaourt -S grub2-theme-arch-leap
+yay -S grub2-theme-arch-leap
 ```
 ### /etc/default/grub
 
