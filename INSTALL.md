@@ -33,8 +33,6 @@ sudo sgdisk --clear \
          --new=3:0:0       --typecode=3:8300 --change-name=3:cryptsystem \
            $INSDRIVE
            
-sudo sgdisk $INSPARTITION --attributes=2:set
-#sgdisk -og $INSDRIVE
 fdisk -l $INSDRIVE
 ```
 
