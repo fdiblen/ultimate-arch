@@ -366,5 +366,11 @@ docker docker-compose
 #kubernetes
 
 
+# Issues
+
+## gnome-terminal does not start
+set language in 
+Settings --> Region & Language --> Language
+
 # Links
 https://wiki.archlinux.org/index.php/general_recommendations
