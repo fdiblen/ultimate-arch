@@ -12,7 +12,7 @@ TODO
 
 New guide (tested on Lenovo X1E) [X1E.md](X1E.md)
 
-Old guide (tested on Dell XPS13) [INSTALL.md](INSTALL.md)
+Old guide (tested on Dell XPS13) [XPS13.md](XPS13.md)
 
 ## Config files
 TODO
