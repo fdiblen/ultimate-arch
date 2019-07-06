@@ -54,7 +54,7 @@ o=defaults,x-mount.mkdir
 o_btrfs=$o,compress=lzo,ssd,noatime
 mount -t btrfs -o subvol=root,$o_btrfs LABEL=system /mnt
 mount -t btrfs -o subvol=home,$o_btrfs LABEL=system /mnt/home
-mount -t btrfs -o subvol=snapshots,$o_btrfs LABEL=system /mnt/.snapshots
+mount -t btrfs -o subvol=snapshots,$o_btrfs LABEL=system /mnt/snapshots
 mkdir /mnt/boot && mount LABEL=EFI /mnt/boot
 ```
 
@@ -232,7 +232,7 @@ yay --clean -S pamac-aur
 ## Extra Apps (optional)
 
 ```bash
-yay -S firefox wps-office spotify zim google-chrome chrome-gnome-shell-git bluez-utils flashplugin file-roller seahorse-nautilus nautilus-share archlinux-artwork gnome-power-manager gnome-usage gnome-sound-recorder dconf-editor gnome-nettool visual-studio-code-bin telegram-desktop slack-desktop pop-icon-theme-git nvm flatpak gnome-packagekit gnome-software-packagekit-plugin xdg-desktop-portal-gtk fzf git wget curl tmux openssl pkgfile unzip unrar p7zip
+yay -S firefox wps-office spotify zim google-chrome chrome-gnome-shell-git bluez-utils flashplugin file-roller seahorse-nautilus nautilus-share archlinux-artwork gnome-power-manager gnome-usage gnome-sound-recorder dconf-editor gnome-nettool visual-studio-code-bin telegram-desktop slack-desktop pop-icon-theme-git nvm flatpak gnome-packagekit gnome-software-packagekit-plugin xdg-desktop-portal-gtk fzf git wget curl tmux openssl pkgfile unzip unrar p7zip tree
 ```
 
 ## Extra tools
@@ -279,6 +279,13 @@ sudo ufw allow out ntp
 sudo ufw allow 53
 sudo ufw allow out 53
 sudo systemctl enable ufw.service
+```
+
+If you will use GNOME Gsconnect extension:
+
+```bash
+sudo ufw allow 1714:1764/udp
+sudo ufw allow 1714:1764/tcp
 ```
 
 **To reset the rules run:**
@@ -328,7 +335,7 @@ sudo systemctl enable gdm-plymouth.service
 sudo plymouth-set-default-theme -R arch-beat
 ```
 
-add splash after quiet in /boot/loader/entries/archlinux.conf
+FIXME: add splash and extra parameters after 'quiet' in /boot/loader/entries/archlinux.conf
 
 ## GUFW icon on panel
 
@@ -341,12 +348,37 @@ Type=Application
 EOL
 ```
 
-## NVIDIA issues
+## Docker
+
+```bash
+sudo pacman -S docker docker-compose
+sudo systemctl enable docker.service
+sudo systemctl start docker.service
+sudo gpasswd -a $USER docker
+```
+
+## Flatpak and Flathub
+
+Add flatpak repository:
+
+```bash
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+```
+
+### Civilization 6
+
+Set launching options bewlo using Properties -> SET LAUNCH OPTIONS
+
+```
+LD_PRELOAD=~/.var/app/com.valvesoftware.Steam/data/Steam/ubuntu12_32/steam-runtime/amd64/usr/lib/x86_64-linux-gnu/libfontconfig.so.1 %command%
+```
+
+## NVIDIA issues (FIXME: WIP)
 
 add the following to /etc/modprobe.d/nvidia.conf
 options NVreg_RegisterForACPIEvents=1 NVreg_EnableMSI=1
 
-## Fix suspend on lid close
+## Fix suspend on lid close (FIXME: WIP)
 
 <!-- FIXME: this is a problem for only NVIDIA cards with proprietary driver -->
 <!-- sudo sed -i 's/^#\?HandlePowerKey=.*$/HandlePowerKey=ignore/g' /etc/systemd/logind.conf
@@ -364,12 +396,14 @@ sudo systemctl mask systemd-rfkill.socket
 sudo systemctl start tlp.service
 ```
 
-## System snapshots
+## System snapshots (FIXME: WIP)
+
+https://wiki.archlinux.org/index.php/Snapper
 
 Install snapper:
 
 ```bash
-sudo pacman -S snapper
+sudo pacman -S snapper snapper-gui
 ```
 
 List subvolumes
@@ -377,6 +411,39 @@ List subvolumes
 ```bash
 sudo btrfs subvolume list /
 ```
+
+Snapper configs
+
+```bash
+sudo snapper list-configs
+sudo snapper -c root create-config /
+sudo snapper -c home create-config /home
+```
+
+
+sudo btrfs subvolume delete /.snapshots
+sudo btrfs subvolume delete /home/.snapshots
+
+sudo btrfs subvolume create /snapshots/ROOT_snapshots
+sudo btrfs subvolume create /snapshots/HOME_snapshots
+
+sudo mkdir /home/.snapshots
+sudo mkdir /.snapshots
+
+sudo mount -t btrfs -o subvolid=473,subvol=/snapshots/ROOT_snapshots,$o_btrfs LABEL=system /.snapshots
+sudo mount -t btrfs -o subvolid=474,subvol=/snapshots/HOME_snapshots,$o_btrfs LABEL=system /home/.snapshots
+
+
+FIXME: create fstab config
+
+
+sudo systemctl start snapper-timeline.timer snapper-cleanup.timer
+sudo systemctl enable snapper-timeline.timer snapper-cleanup.timer
+
+
+Create snapshots:
+sudo snapper -c home create --description 'First clean snapshot'
+
 
 <br>
 </details>
@@ -395,10 +462,17 @@ cryptsetup open /dev/disk/by-partlabel/cryptsystem system
 o=defaults,x-mount.mkdir
 o_btrfs=$o,compress=lzo,ssd,noatime
 
-mount -t btrfs -o subvol=root,$o_btrfs LABEL=system /mnt
-mount -t btrfs -o subvol=home,$o_btrfs LABEL=system /mnt/home
-mount -t btrfs -o subvol=snapshots,$o_btrfs LABEL=system /mnt/.snapshots
-mount LABEL=EFI /mnt/boot
+sudo mount -t btrfs -o subvol=root,$o_btrfs LABEL=system /mnt
+sudo mount -t btrfs -o subvol=home,$o_btrfs LABEL=system /mnt/home
+sudo mount -t btrfs -o subvol=snapshots,$o_btrfs LABEL=system /mnt/snapshots
+sudo mount LABEL=EFI /mnt/boot
+```
+
+## Mount snapshots (if required) (FIXME: WIP)
+
+```bash
+sudo mount -t btrfs -o subvolid=473,subvol=/snapshots/ROOT_snapshots,$o_btrfs LABEL=system /.snapshots
+sudo mount -t btrfs -o subvolid=474,subvol=/snapshots/HOME_snapshots,$o_btrfs LABEL=system /home/.snapshots
 ```
 
 ## 2- CHROOTing for maintenance (option-1)
@@ -437,9 +511,12 @@ systemd-nspawn -bD /mnt
 <br>
 
 - Disable root login over ssh.
+- Disable tracker in GNOME (file indexer)
+- Hibernation support
 - Check suspend and hibernate
 - Battery optimization
 - Fix lid switch to suspend (for NVIDIA cards)
+- Printing
 - Fingerprint
 - Check system76 tools https://ebobby.org/2018/07/15/archlinux-on-oryp4/
 
@@ -457,6 +534,13 @@ systemd-nspawn -bD /mnt
 - https://github.com/fdiblen/Arch-Linux-Dell-XPS13-9350/blob/master/INSTALL.md
 
 - https://gist.github.com/ansulev/7cdf38a3d387599adf9addd248b09db8
+
+- https://ramsdenj.com/2016/04/05/using-btrfs-for-easy-backup-and-rollback.html
+
+FIXME: Tracker
+- https://gist.github.com/vancluever/d34b41eb77e6d077887c
+
+- https://www.noulakaz.net/2019/04/09/disable-tracker-in-gnome-if-you-do-not-need-it/
 
 <br>
 </details>
