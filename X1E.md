@@ -194,14 +194,9 @@ systemctl enable gdm
 <br>
 </details>
 
-
 <details>
 <summary>Extras</summary>
 <br>
-
-## Gdm high cpu usage issue
-edit /etc/gdm/custom.conf and uncomment the line below to force gdm to use Xorg
-WaylandEnable=false
 
 ## Settings
 edit /etc/sudoers for wheel # FIXME: automate it
@@ -260,46 +255,6 @@ dconf reset -f /org/gnome
 add the line below to /boot/loader/entries/archlinux.conf (line 3)
 initrd  /intel-ucode.img
 
-## Firewall
-
-```bash
-sudo pacman -S ufw gufw
-sudo ufw enable
-sudo ufw default deny incoming
-sudo ufw default deny outgoing
-sudo ufw default deny forward
-sudo ufw allow http
-sudo ufw allow out http
-sudo ufw allow https
-sudo ufw allow out https
-sudo ufw allow ssh
-sudo ufw allow out ssh
-sudo ufw allow ntp
-sudo ufw allow out ntp
-sudo ufw allow 53
-sudo ufw allow out 53
-sudo systemctl enable ufw.service
-```
-
-If you will use GNOME Gsconnect extension:
-
-```bash
-sudo ufw allow 1714:1764/udp
-sudo ufw allow 1714:1764/tcp
-```
-
-**To reset the rules run:**
-
-```bash
-sudo ufw reset && sudo ufw enable
-```
-
-## Disable root login
-
-```bash
-sudo passwd -l root # to unlock: sudo passwd -u root
-```
-
 ## Toucpad
 
 https://wiki.archlinux.org/index.php/Touchpad_Synaptics#Installation
@@ -337,16 +292,6 @@ sudo plymouth-set-default-theme -R arch-beat
 
 FIXME: add splash and extra parameters after 'quiet' in /boot/loader/entries/archlinux.conf
 
-## GUFW icon on panel
-
-```bash
-cat > ~/.config/autostart/gufw_icon.desktop << EOL
-[Desktop Entry]
-Name=GUFW icon
-Exec=/usr/bin/gufw_icon.sh
-Type=Application
-EOL
-```
 
 ## Docker
 
@@ -444,6 +389,75 @@ sudo systemctl enable snapper-timeline.timer snapper-cleanup.timer
 Create snapshots:
 sudo snapper -c home create --description 'First clean snapshot'
 
+
+<br>
+</details>
+
+<details>
+<summary>Security</summary>
+<br>
+
+## Firewall
+
+```bash
+sudo pacman -S ufw gufw
+sudo ufw enable
+sudo ufw default deny incoming
+sudo ufw default deny outgoing
+sudo ufw default deny forward
+sudo ufw allow http
+sudo ufw allow out http
+sudo ufw allow https
+sudo ufw allow out https
+sudo ufw allow ssh
+sudo ufw allow out ssh
+sudo ufw allow ntp
+sudo ufw allow out ntp
+sudo ufw allow 53
+sudo ufw allow out 53
+sudo systemctl enable ufw.service
+```
+
+If you will use GNOME Gsconnect extension:
+
+```bash
+sudo ufw allow 1714:1764/udp
+sudo ufw allow 1714:1764/tcp
+```
+
+**To reset the rules run:**
+
+```bash
+sudo ufw reset && sudo ufw enable
+```
+
+## Disable root login
+
+```bash
+sudo passwd -l root # to unlock: sudo passwd -u root
+```
+
+## GUFW icon on panel
+
+```bash
+cat > ~/.config/autostart/gufw_icon.desktop << EOL
+[Desktop Entry]
+Name=GUFW icon
+Exec=/usr/bin/gufw_icon.sh
+Type=Application
+EOL
+```
+
+<br>
+</details>
+
+<details>
+<summary>Issues/Fixes</summary>
+<br>
+
+## Gdm high cpu usage issue
+edit /etc/gdm/custom.conf and uncomment the line below to force gdm to use Xorg
+WaylandEnable=false
 
 <br>
 </details>
