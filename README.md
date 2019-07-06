@@ -1,4 +1,4 @@
-# Arch Linux on Dell XPS 13 (9350)
+# Arch Linux with brtrfs filesystem and full-disk-encryption
 
 Arch Linux installation with full encryption.
   * encrypted Grub bootloader
@@ -9,10 +9,10 @@ Arch Linux installation with full encryption.
 TODO
 
 ## Installation 
-Check [INSTALL.md](INSTALL.md)
 
-## System snapshots
-TODO
+New guide (tested with Lenovo X1E) [X1E.md](X1E.md)
+
+Old guide (tested on Dell XPS13) [INSTALL.md](INSTALL.md)
 
 ## Config files
 TODO
