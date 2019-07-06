@@ -186,9 +186,16 @@ passwd fdiblen
 <summary>Desktop environment</summary>
 <br>
 
+## Install GNOME desktop (minimum)
 ```bash
 pacman -S gnome-shell gdm gnome-terminal gnome-control-center gnome-tweak-tool
 systemctl enable gdm
+```
+
+## Install full GNOME desktop
+
+```bash
+sudo pacman -S gnome gnome-extra arc-gtk-theme
 ```
 
 <br>
@@ -200,12 +207,6 @@ systemctl enable gdm
 
 ## Settings
 edit /etc/sudoers for wheel # FIXME: automate it
-
-## Install full GNOME desktop
-
-```bash
-sudo pacman -S gnome gnome-extra arc-gtk-theme
-```
 
 ## AUR helper and Pamac
 
