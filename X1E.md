@@ -121,7 +121,7 @@ mkinitcpio -p linux
 ### Services
 
 ```bash
-systemctl enable NetworkManager sshd acpid dbus cronie
+systemctl enable NetworkManager sshd acpid dbus cronie bluetooth fstrim.timer
 ```
 
 ### Bootloader (systemd boot)
@@ -228,7 +228,7 @@ yay --clean -S pamac-aur
 ## Extra Apps (optional)
 
 ```bash
-yay -S firefox wps-office spotify zim google-chrome chrome-gnome-shell-git bluez-utils flashplugin file-roller seahorse-nautilus nautilus-share archlinux-artwork gnome-power-manager gnome-usage gnome-sound-recorder dconf-editor gnome-nettool visual-studio-code-bin telegram-desktop slack-desktop pop-icon-theme-git nvm flatpak gnome-packagekit gnome-software-packagekit-plugin xdg-desktop-portal-gtk fzf git wget curl tmux openssl pkgfile unzip unrar p7zip tree
+yay -S firefox wps-office spotify zim google-chrome chrome-gnome-shell-git bluez-utils flashplugin file-roller seahorse-nautilus nautilus-share archlinux-artwork gnome-power-manager gnome-usage gnome-sound-recorder dconf-editor gnome-nettool visual-studio-code-bin telegram-desktop slack-desktop pop-icon-theme-git nvm flatpak gnome-packagekit gnome-software-packagekit-plugin xdg-desktop-portal-gtk fzf git wget curl tmux openssl pkgfile unzip unrar p7zip tree xorg-apps
 ```
 
 ## Extra tools
@@ -251,12 +251,32 @@ To reset gnome settings use:
 dconf reset -f /org/gnome
 ```
 
+## Enable fractional scaling for GNOME
+
+```bash
+gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuffer']"
+gsettings set org.gnome.mutter experimental-features "['x11-randr-fractional-scaling']"
+```
+
+to disable:
+
+```bash
+gsettings reset org.gnome.mutter experimental-features
+```
+
 ## intel ucode
 
 add the line below to /boot/loader/entries/archlinux.conf (line 3)
 initrd  /intel-ucode.img
 
-## Toucpad
+## Bluetooth
+
+```bash
+sudo systemctl enable bluetooth.service
+sudo systemctl start bluetooth.service
+```
+
+## Touchpad
 
 https://wiki.archlinux.org/index.php/Touchpad_Synaptics#Installation
 
@@ -438,6 +458,28 @@ sudo ufw reset && sudo ufw enable
 sudo passwd -l root # to unlock: sudo passwd -u root
 ```
 
+## Opensnitch (application firewall)
+
+<!-- https://www.linuxuprising.com/2018/04/how-to-install-opensnitch-application.html -->
+<!-- https://itsfoss.com/opensnitch-firewall-linux/ -->
+
+https://github.com/evilsocket/opensnitch
+
+```bash
+yay  -S opensnitch-git
+sudo systemctl enable opensnitchd
+sudo systemctl start opensnitchd
+```
+
+```bash
+cat > ~/.config/autostart/opensnitch_ui.desktop << EOL
+[Desktop Entry]
+Name=Opensnitch UI
+Exec=opensnitch-ui
+Type=Application
+EOL
+```
+
 ## GUFW icon on panel
 
 ```bash
@@ -460,12 +502,22 @@ EOL
 edit /etc/gdm/custom.conf and uncomment the line below to force gdm to use Xorg
 WaylandEnable=false
 
+## Bluetooth audio Mono channel problem
+https://wiki.archlinux.org/index.php/Bluetooth_headset#A2DP_not_working_with_PulseAudio
+
+
 <br>
 </details>
 
 <details>
 <summary>Maintenance</summary>
 <br>
+
+You can check failing services with:
+
+```bash
+sudo systemctl --failed
+```
 
 ## 1- Mount the volumes
 
@@ -527,7 +579,6 @@ systemd-nspawn -bD /mnt
 
 - Disable root login over ssh.
 - Disable tracker in GNOME (file indexer)
-- Hibernation support
 - Check suspend and hibernate
 - Battery optimization
 - Fix lid switch to suspend (for NVIDIA cards)
