@@ -480,6 +480,22 @@ Type=Application
 EOL
 ```
 
+The rules can be found in:
+
+**/etc/opensnitchd/rules**
+
+UI configuration:
+
+```bash
+cat > ~/.opensnitch/ui-config.json << EOL
+{
+  "default_timeout": 30,
+  "default_action": "deny",
+  "default_duration": "until restart"
+}
+EOL
+```
+
 ## GUFW icon on panel
 
 ```bash
