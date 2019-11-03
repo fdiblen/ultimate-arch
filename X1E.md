@@ -446,6 +446,13 @@ sudo ufw allow 1714:1764/udp
 sudo ufw allow 1714:1764/tcp
 ```
 
+To allow OpenVPN connections:
+
+```bash
+sudo ufw allow out 1194/udp
+sudo ufw allow out 1194/tcp
+```
+
 **To reset the rules run:**
 
 ```bash
