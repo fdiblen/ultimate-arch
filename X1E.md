@@ -61,7 +61,7 @@ mkdir /mnt/boot && mount LABEL=EFI /mnt/boot
 ## Install base system (with some extras)
 
 ```bash
-pacstrap /mnt base base-devel btrfs-progs sudo intel-ucode acpid bluez linux-headers ntp dbus avahi cronie vim openssh net-tools networkmanager dialog terminus-font zsh fish bash-completion htop
+pacstrap /mnt base base-devel btrfs-progs sudo intel-ucode acpid bluez linux-headers ntp dbus avahi cronie vim openssh net-tools networkmanager dialog terminus-font zsh fish bash-completion htop fwupd linux-firmware nvidia nvidia-lts nvidia-prime nvidia-utils
 ```
 
 ## Generate fstab
@@ -86,6 +86,11 @@ echo '/swapfile none swap defaults 0 0' >> /mnt/etc/fstab
 
 ```bash
 arch-chroot /mnt /bin/bash
+```
+
+### set Root password
+```bash
+passwd
 ```
 
 ### Set locale-hostname-time
@@ -520,6 +525,13 @@ EOL
 <details>
 <summary>Issues/Fixes</summary>
 <br>
+
+## disable Intel CPU turbo
+
+```bash
+sudo pacman -S cpupower
+sudo echo 1 | sudo tee -a /sys/devices/system/cpu/intel_pstate/no_turbo
+```
 
 ## Gdm high cpu usage issue
 edit /etc/gdm/custom.conf and uncomment the line below to force gdm to use Xorg
